@@ -1,6 +1,9 @@
 import sqlite3
+import os
+import time
+db_path = os.path.join(os.path.dirname(__file__), 'cipher_db.sqlite')
 def get_cipher_dict_from_db():
-    conn = sqlite3.connect('cipher_db.sqlite')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM cipher")
     rows = cursor.fetchall()
@@ -43,7 +46,8 @@ def decrypt(encrypted_message, cipher_dict):
 
 def main():
     cipher_dict = get_cipher_dict_from_db()
-    message = "Привет от ИКБ"
+    print("введите текст")
+    message = input()
     encrypted_message = encrypt(message, cipher_dict)
     data_str = '|'.join(' '.join(sublist) for sublist in encrypted_message)
     data_back = [sublist.split() for sublist in data_str.split('|')]
@@ -51,6 +55,11 @@ def main():
     print("Исходное сообщение:", message)
     print("Зашифрованное сообщение:", data_str)
     print("Дешифрованное сообщение:", decrypted_message)
+    print("Программа приостановлена. Нажмите Enter для выхода")
+    try:
+        input_timeout = input(">")
+    except TimeoutError:
+        time.sleep(10000)
 
 if __name__ == "__main__":
     main()
